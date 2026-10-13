@@ -6,7 +6,7 @@ A static HTML form (no server needed) hosted on GitHub Pages.
 - `questions.js`: **all questions and options**. Edit this file to change the form.
 - `style.css`: the design (navy background, gold labels, rounded white fields)
 - `app.js`: rendering, validation, signature pad and submission
-- `assets/logo.png`: put the school logo here. Until then, `assets/logo.svg` is shown as a placeholder.
+- `assets/logo.png`: official BIST crest (from "BIST logo yellow transparent.png")
 
 ## Where responses go
 
