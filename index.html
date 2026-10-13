@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Transition Information Request</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <img class="logo" src="assets/logo.png" onerror="this.onerror=null;this.src='assets/logo.svg'" alt="School logo">
+      <h1>Student Transition Information Request</h1>
+    </header>
+
+    <form id="form" novalidate>
+      <div id="fields"></div>
+      <p id="formError" class="form-error" hidden>Please fill in all required fields.</p>
+      <div class="actions">
+        <button type="submit" id="submitBtn" class="submit">Submit</button>
+      </div>
+    </form>
+
+    <section id="thanks" class="thanks" hidden>
+      <img class="logo" src="assets/logo.png" onerror="this.onerror=null;this.src='assets/logo.svg'" alt="">
+      <h2>Thank you!</h2>
+      <p>Your response has been submitted successfully.</p>
+    </section>
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

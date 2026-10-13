@@ -1,0 +1,114 @@
+:root {
+  --bg: #223b64;
+  --gold: #e3c06e;
+  --field: #ffffff;
+  --text: #1f2a3c;
+  --muted: #8a94a6;
+  --accent: #223b64;
+  --error: #ff8a80;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--gold);
+  font-family: "Lato", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+.wrap { max-width: 640px; margin: 0 auto; padding: 40px 16px 80px; }
+
+.head { text-align: center; }
+.logo { width: 44px; height: auto; display: block; margin: 0 0 40px 40px; }
+.thanks .logo { margin: 0 auto 24px; width: 64px; }
+h1 { font-size: 22px; font-weight: 700; margin: 0 0 32px; color: var(--gold); }
+
+.q { margin-bottom: 36px; }
+.q label.title, .q .title {
+  display: block;
+  margin: 0 0 8px 20px;
+  font-size: 13px;
+  color: var(--gold);
+}
+.q .req { color: var(--gold); }
+.q .help { display: block; font-style: italic; opacity: .8; margin-top: 4px; font-size: 12px; }
+
+.input, .textarea {
+  width: 100%;
+  border: 2px solid transparent;
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.input { height: 46px; border-radius: 999px; padding: 0 20px; }
+.textarea { min-height: 128px; border-radius: 18px; padding: 14px 20px; resize: vertical; }
+.input:focus, .textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(227,192,110,.25); }
+.input::placeholder, .textarea::placeholder { color: var(--muted); }
+
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.choices { display: grid; gap: 8px; }
+.choices.yesno { grid-template-columns: 1fr 1fr; gap: 10px; }
+.choice { position: relative; display: block; cursor: pointer; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice span {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 40px; padding: 8px 20px;
+  background: var(--field); color: var(--text);
+  border: 2px solid transparent; border-radius: 999px;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.choice span::before {
+  content: ""; flex: none; width: 16px; height: 16px;
+  border: 2px solid #c5cbd6; border-radius: 50%; background: #fff;
+}
+.choices.multi .choice span::before { border-radius: 4px; }
+.choice:hover span { border-color: var(--gold); }
+.choice input:focus-visible + span { border-color: var(--gold); }
+.choice input:checked + span { background: var(--gold); color: var(--accent); font-weight: 700; }
+.choice input:checked + span::before {
+  border-color: var(--accent);
+  background: var(--accent) radial-gradient(circle, #fff 30%, transparent 32%);
+}
+.choices.multi .choice input:checked + span::before {
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8l3 3 7-7' fill='none' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E") center/12px no-repeat;
+}
+
+.statement { text-align: center; font-style: italic; line-height: 1.6; margin: 56px 10px 48px; font-size: 13px; }
+
+.sig-box { position: relative; background: var(--field); border-radius: 18px; height: 150px; overflow: hidden; }
+.sig-box canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+.sig-hint { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); pointer-events: none; }
+.sig-box.signed .sig-hint { display: none; }
+.sig-clear {
+  position: absolute; top: 8px; right: 10px; border: 0; background: transparent;
+  color: var(--accent); font: inherit; font-size: 12px; cursor: pointer; text-decoration: underline;
+}
+
+.q.invalid .input, .q.invalid .textarea, .q.invalid .choice span, .q.invalid .sig-box { border-color: var(--error); }
+.q .err { display: none; color: var(--error); font-size: 12px; margin: 6px 0 0 20px; }
+.q.invalid .err { display: block; }
+.form-error { text-align: center; color: var(--error); }
+
+.actions { text-align: center; margin-top: 24px; }
+.submit {
+  background: #1a2f52; color: #fff; border: 0; border-radius: 6px;
+  padding: 12px 28px; font: inherit; font-weight: 700; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.submit:hover { background: #142644; }
+.submit:disabled { opacity: .6; cursor: wait; }
+
+.thanks { text-align: center; padding-top: 80px; }
+.thanks h2 { font-size: 26px; margin: 0 0 10px; }
+.thanks p { color: #fff; }
+
+@media (max-width: 480px) {
+  .row, .choices.yesno { grid-template-columns: 1fr; }
+  .logo { margin-left: 0; }
+}
