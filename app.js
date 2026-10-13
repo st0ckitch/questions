@@ -2,7 +2,7 @@
 // Google Apps Script web app (code in apps-script/Code.gs, setup steps in README.md).
 // Paste the web app URL (ends in /exec) below.
 const CONFIG = {
-  sheetsUrl: "",
+  sheetsUrl: "https://script.google.com/macros/s/AKfycbyUwPoLDBSBdRxDxhoKBTjykTcr0-OBOhM_AQSoLLJWfk5r27zuCsg2583wdKYHDq8n/exec",
 };
 
 const fieldsEl = document.getElementById("fields");
