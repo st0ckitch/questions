@@ -5,6 +5,7 @@
 const SPREADSHEET_ID = "1bATGVFtzyjq0Uu1cyHhwkOJQeSfbcNnDR1hfPaWKayM";
 const SHEET_NAME = "Responses";
 const SIGNATURE_FOLDER = "Student Transition Form – Signatures";
+const NOTIFY_EMAIL = "admissions@bist.ge"; // gets an email for every new submission
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -24,6 +25,7 @@ function doPost(e) {
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight("bold");
     sheet.setFrozenRows(1);
     sheet.appendRow(headers.map((h) => (h in record ? record[h] : "")));
+    notify_(record, ss.getUrl());
 
     return json_({ ok: true });
   } catch (err) {
@@ -39,6 +41,24 @@ function saveSignature_(dataUrl, record) {
   const bytes = Utilities.base64Decode(dataUrl.split(",")[1]);
   const name = `${record["Student Full Name"] || "student"} – ${Utilities.formatDate(new Date(), "GMT+4", "yyyy-MM-dd HH-mm")}.png`;
   return folder.createFile(Utilities.newBlob(bytes, "image/png", name)).getUrl();
+}
+
+function notify_(record, sheetUrl) {
+  const esc = (v) => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
+  const rows = Object.keys(record).map((k) => {
+    const v = record[k] instanceof Date ? record[k].toLocaleString() : record[k];
+    const cell = k === "Signature" && v ? `<a href="${v}">View signature</a>` : esc(v || "—");
+    return `<tr><td style="padding:6px 10px;border:1px solid #ddd;background:#f5f7fb;font-weight:bold;vertical-align:top">${esc(k)}</td>` +
+           `<td style="padding:6px 10px;border:1px solid #ddd">${cell}</td></tr>`;
+  }).join("");
+  const student = record["Student Full Name"] || "a student";
+  MailApp.sendEmail({
+    to: NOTIFY_EMAIL,
+    subject: `New Student Transition Information Request: ${student}`,
+    htmlBody: `<p>A new Student Transition Information Request was submitted for <b>${esc(student)}</b>.</p>` +
+              `<table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:13px">${rows}</table>` +
+              `<p><a href="${sheetUrl}">Open the responses sheet</a></p>`,
+  });
 }
 
 function json_(obj) {

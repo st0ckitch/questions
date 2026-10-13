@@ -10,7 +10,7 @@ A static HTML form (no server needed) hosted on GitHub Pages.
 
 ## Where responses go
 
-Every submission is saved as a new row in a Google Sheet. Nothing is emailed.
+Every submission is saved as a new row in a Google Sheet, and a copy of the answers is emailed to **admissions@bist.ge** (set `NOTIFY_EMAIL` in `apps-script/Code.gs`).
 - **Sheet:** [responses sheet](https://docs.google.com/spreadsheets/d/1bATGVFtzyjq0Uu1cyHhwkOJQeSfbcNnDR1hfPaWKayM/edit), in a tab named **Responses**, which the script creates if needed
 - **Columns:** one per question, plus "Submitted at"
 - **Signatures:** each one is saved as a PNG in a Drive folder named

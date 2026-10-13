@@ -53,10 +53,7 @@ window.QUESTIONS = [
   { id: "service_details", type: "textarea", label: "Details / contacts (where sharing permission given)" },
 
   { id: "strengths", type: "textarea", label: "Key strengths / interests / positive qualities" },
-  { id: "motivation", type: "textarea", label: "What motivates the student" },
-  { id: "approaches", type: "textarea", label: "Approaches that work particularly well" },
   { id: "struggles", type: "textarea", label: "Situations / environments where the student may struggle" },
-  { id: "transition_advice", type: "textarea", label: "Advice for a successful transition" },
   { id: "integration_support", type: "yesno", label: "Would you recommend any specific support / additional strategies to ensure successful integration?", required: true },
   { id: "integration_details", type: "textarea", label: "Integration details" },
 
