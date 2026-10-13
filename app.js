@@ -1,10 +1,7 @@
-// Where submissions go. Every response is emailed via FormSubmit (https://formsubmit.co).
-// Optional: set sheetsUrl to a Google Apps Script web-app URL to also store each response
-// as a row in a Google Sheet (see README.md).
+// Where submissions go. Every response is saved as a row in a Google Sheet through a
+// Google Apps Script web app (code in apps-script/Code.gs, setup steps in README.md).
+// Paste the web app URL (ends in /exec) below.
 const CONFIG = {
-  to: "artyomananov@gmail.com",
-  cc: ["i.sisauri@bist.ge"],
-  subject: "New Student Transition Information Request",
   sheetsUrl: "",
 };
 
@@ -154,7 +151,7 @@ function valueOf(q) {
     case "single":
       return formEl.querySelector(`input[name="${q.id}"]:checked`)?.value || "";
     case "signature":
-      return signatures[q.id].state.signed ? "Signed (see attached signature.png)" : "";
+      return signatures[q.id].state.signed ? "Signed" : "";
     default:
       return f[q.id].value.trim();
   }
@@ -175,41 +172,21 @@ function collect() {
   return { answers, firstInvalid };
 }
 
-function signatureBlob() {
+async function saveToSheet(answers) {
+  if (!CONFIG.sheetsUrl) throw new Error("the form is not connected to a Google Sheet yet");
   const sig = Object.values(signatures).find((s) => s.state.signed);
-  return sig ? new Promise((res) => sig.canvas.toBlob(res, "image/png")) : Promise.resolve(null);
-}
-
-async function sendEmail(answers, sigBlob) {
-  const data = new FormData();
-  const student = answers.find((a) => a.q.id === "student_name")?.value;
-  data.append("_subject", student ? `${CONFIG.subject}: ${student}` : CONFIG.subject);
-  data.append("_cc", CONFIG.cc.join(","));
-  data.append("_template", "table");
-  data.append("_captcha", "false");
-  for (const { q, value } of answers) data.append(q.label, value || "—");
-  if (sigBlob) data.append("attachment", sigBlob, "signature.png");
-
-  const res = await fetch(`https://formsubmit.co/ajax/${CONFIG.to}`, {
+  const payload = {
+    fields: answers.map(({ q, value }) => ({ label: q.label, value })),
+    signature: sig ? sig.canvas.toDataURL("image/png") : "",
+  };
+  // text/plain keeps this a "simple" request, so Apps Script accepts it without a CORS preflight.
+  const res = await fetch(CONFIG.sheetsUrl, {
     method: "POST",
-    headers: { Accept: "application/json" },
-    body: data,
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload),
   });
   const json = await res.json().catch(() => ({}));
-  if (!res.ok || String(json.success) === "false") throw new Error(json.message || `HTTP ${res.status}`);
-}
-
-function sendToSheet(answers, sigDataUrl) {
-  if (!CONFIG.sheetsUrl) return Promise.resolve();
-  const row = { submitted_at: new Date().toISOString() };
-  for (const { q, value } of answers) row[q.label] = value;
-  if (sigDataUrl) row["Signature image"] = sigDataUrl;
-  return fetch(CONFIG.sheetsUrl, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(row),
-  }).catch(() => {});
+  if (!res.ok || !json.ok) throw new Error(json.error || `HTTP ${res.status}`);
 }
 
 formEl.addEventListener("submit", async (e) => {
@@ -225,9 +202,7 @@ formEl.addEventListener("submit", async (e) => {
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting…";
   try {
-    const sigBlob = await signatureBlob();
-    const sigDataUrl = Object.values(signatures).find((s) => s.state.signed)?.canvas.toDataURL("image/png");
-    await Promise.all([sendEmail(answers, sigBlob), sendToSheet(answers, sigDataUrl)]);
+    await saveToSheet(answers);
     formEl.hidden = true;
     document.querySelector(".head").hidden = true;
     document.getElementById("thanks").hidden = false;

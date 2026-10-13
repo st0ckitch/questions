@@ -10,33 +10,24 @@ A static HTML form (no server needed) hosted on GitHub Pages.
 
 ## Where responses go
 
-Each submission is emailed through [FormSubmit](https://formsubmit.co) to
-**artyomananov@gmail.com**, with a CC to **i.sisauri@bist.ge**. The email contains
-every answer in a table, and the drawn signature is attached as `signature.png`.
+Every submission is saved as a new row in a Google Sheet. Nothing is emailed.
+- **Sheet:** [Student Transition Information Request – Responses](https://docs.google.com/spreadsheets/d/1XWLgGWxkiCZSQOWdV4Gjn704GC_-UXbM5u-stzCqRBc/edit)
+- **Columns:** one per question, plus "Submitted at"
+- **Signatures:** each one is saved as a PNG in a Drive folder named
+  *Student Transition Form – Signatures*. Its link goes in the "Signature" column.
 
-**One-time activation:** the first time the form is submitted, FormSubmit sends an
-activation email to artyomananov@gmail.com. Someone must click **Activate Form** in that
-email. Until then, no submissions are delivered, the first one included. After activating,
-send a test submission.
+### One-time setup (about 5 minutes)
 
-### Optional: also save every response to a Google Sheet
+1. Open the sheet above and go to **Extensions → Apps Script**.
+2. Delete what's in `Code.gs`, paste in the contents of [`apps-script/Code.gs`](apps-script/Code.gs), and save.
+3. Click **Deploy → New deployment**. Under the gear icon choose **Web app**, then set:
+   - *Execute as:* **Me**
+   - *Who has access:* **Anyone**
+4. Click **Deploy** and allow the permissions Google asks for.
+5. Copy the **Web app URL** (it ends in `/exec`) and paste it into `sheetsUrl` in `app.js`.
+   Then commit, or send the URL to whoever maintains this repo.
 
-1. Create a Google Sheet, then open **Extensions → Apps Script** and paste:
-
-   ```js
-   function doPost(e) {
-     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-     const data = JSON.parse(e.postData.contents);
-     let headers = sheet.getLastRow() ? sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0] : [];
-     Object.keys(data).forEach((k) => { if (!headers.includes(k)) headers.push(k); });
-     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-     sheet.appendRow(headers.map((h) => data[h] ?? ""));
-     return ContentService.createTextOutput("ok");
-   }
-   ```
-
-2. Click **Deploy → New deployment → Web app**, set *Execute as: Me* and *Who has access: Anyone*, then deploy.
-3. Paste the web app URL into `sheetsUrl` in `app.js`.
+If you edit the script later, use **Deploy → Manage deployments → Edit → New version** so the URL stays the same.
 
 ## Publishing with GitHub Pages
 
