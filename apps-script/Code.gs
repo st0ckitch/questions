@@ -1,7 +1,8 @@
 // Google Apps Script for the Student Transition Information Request form.
-// Paste into the Google Sheet via Extensions → Apps Script, then deploy as a web app
+// Paste into the responses Google Sheet via Extensions → Apps Script, then deploy as a web app
 // (Execute as: Me, Who has access: Anyone). See README.md.
 
+const SPREADSHEET_ID = "1bATGVFtzyjq0Uu1cyHhwkOJQeSfbcNnDR1hfPaWKayM";
 const SHEET_NAME = "Responses";
 const SIGNATURE_FOLDER = "Student Transition Form – Signatures";
 
@@ -10,7 +11,7 @@ function doPost(e) {
   lock.waitLock(30000);
   try {
     const data = JSON.parse(e.postData.contents);
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
 
     const record = { "Submitted at": new Date() };

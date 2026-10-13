@@ -11,7 +11,7 @@ A static HTML form (no server needed) hosted on GitHub Pages.
 ## Where responses go
 
 Every submission is saved as a new row in a Google Sheet. Nothing is emailed.
-- **Sheet:** [Student Transition Information Request – Responses](https://docs.google.com/spreadsheets/d/1XWLgGWxkiCZSQOWdV4Gjn704GC_-UXbM5u-stzCqRBc/edit)
+- **Sheet:** [responses sheet](https://docs.google.com/spreadsheets/d/1bATGVFtzyjq0Uu1cyHhwkOJQeSfbcNnDR1hfPaWKayM/edit), in a tab named **Responses**, which the script creates if needed
 - **Columns:** one per question, plus "Submitted at"
 - **Signatures:** each one is saved as a PNG in a Drive folder named
   *Student Transition Form – Signatures*. Its link goes in the "Signature" column.
